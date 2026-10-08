@@ -27,12 +27,12 @@
   --faint: #aeb6cc;
   --on-dark: #e6ebf5;
   --inverse: #17203a;
-  --accent: #075985;
-  --accent-hover: #064466;
-  --accent-text: #075985;
-  --accent-soft: #eaf3f5;
-  --accent-line: #c9dce4;
-  --accent-rgb: 7, 89, 133;
+  --accent: #111111;
+  --accent-hover: #000000;
+  --accent-text: #111111;
+  --accent-soft: #f2f3f5;
+  --accent-line: #dcdfe4;
+  --accent-rgb: 17, 17, 17;
   --green: #00a67d;
   --green-text: #00866b;
   --green-soft: #e8f7f2;
@@ -91,12 +91,12 @@
   --faint: #56617b;
   --on-dark: #e8edf7;
   --inverse: #2f3a56;
-  --accent: #2a8ec4;
-  --accent-hover: #3b9fd4;
-  --accent-text: #7cc6ec;
-  --accent-soft: #152a3b;
-  --accent-line: #25506a;
-  --accent-rgb: 124, 198, 236;
+  --accent: #f4f5f7;
+  --accent-hover: #ffffff;
+  --accent-text: #e8edf7;
+  --accent-soft: #1f2738;
+  --accent-line: #3a4560;
+  --accent-rgb: 244, 245, 247;
   --green: #1fae86;
   --green-text: #5bd6ad;
   --green-soft: #12302a;
@@ -1603,12 +1603,15 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
   .wa-actions .button, .wa-actions-side { width: 100%; }
 }
 
-/* Identidad OpenLivery: azul institucional, verde como acento y superficies neutras. */
+/* Palawan Collective identity: monochrome primary (black on light, white on dark),
+   green kept as the secondary accent and neutral surfaces throughout. */
 .openlivery-icon {
   width: 32px !important;
   height: 32px !important;
   min-width: 32px;
-  display: inline-block !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
   position: relative;
   overflow: hidden;
   flex: 0 0 auto;
@@ -1618,22 +1621,23 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
   box-shadow: none !important;
 }
 .openlivery-icon img {
-  width: 112px !important;
+  width: 86% !important;
+  height: 86% !important;
   max-width: none !important;
-  height: 112px !important;
-  position: absolute;
-  top: -38px;
-  left: -15px;
+  position: static;
   object-fit: contain;
 }
-.openlivery-icon::after { content: ""; width: 6px; position: absolute; inset: 0 0 0 auto; z-index: 2; background: var(--canvas); }
+/* Turtle mark follows the theme: black on light canvases, white on dark. */
+.openlivery-icon img.logo-dark { display: none; }
+:root[data-theme="dark"] .openlivery-icon img.logo-light { display: none; }
+:root[data-theme="dark"] .openlivery-icon img.logo-dark { display: inline; }
 .brand .openlivery-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
-.brand .openlivery-icon img { width: 106px !important; height: 106px !important; top: -36px; left: -14px; }
 .preview-logo.openlivery-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
-.preview-logo.openlivery-icon img { width: 106px !important; height: 106px !important; top: -36px; left: -14px; }
 
 .brand-row { padding-bottom: 14px; }
 .brand { color: var(--accent-text); font-size: 16px; font-weight: 700; }
+/* The sidebar is always dark navy, so the wordmark stays white in both themes. */
+.sidebar .brand { color: white; }
 .sidebar-workspace { min-height: 38px; margin: 12px 4px 14px; padding: 0 9px; display: flex; align-items: center; gap: 8px; color: var(--muted); border: 1px solid var(--line); border-radius: 7px; background: var(--surface-2); font-size: 12px; }
 .sidebar-workspace span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* The agency's own logo when it has one; the building icon otherwise. */
@@ -1691,6 +1695,27 @@ input:focus, textarea:focus, select:focus, .phone-input:focus-within { border-co
 .portal-access .button.primary { border-color: var(--portal-color, var(--accent)); background: var(--portal-color, var(--accent)); }
 .portal-brand span, .portal-brand img { background: var(--portal-color, var(--accent)); }
 .portal-preview > footer strong { color: var(--portal-color, var(--accent-text)); }
+
+/* Dark theme flips the primary to white, so everything that puts white text or
+   icons on an accent background gets the canvas color back instead. */
+:root[data-theme="dark"] .button.primary,
+:root[data-theme="dark"] .message-row.user .bubble,
+:root[data-theme="dark"] .inbox-message.user p,
+:root[data-theme="dark"] .preview-thread article.mine p,
+:root[data-theme="dark"] .composer button:not(.composer-attach),
+:root[data-theme="dark"] .inbox-composer button,
+:root[data-theme="dark"] .hero-panel .button.light,
+:root[data-theme="dark"] .inbox-unread-count,
+:root[data-theme="dark"] .wizard-steps li.current span,
+:root[data-theme="dark"] .transport-toggle button.active,
+:root[data-theme="dark"] .audio-bubble > button,
+:root[data-theme="dark"] .audio-bubble .audio-play,
+:root[data-theme="dark"] .segmented button.active,
+:root[data-theme="dark"] .drp-grid button.start,
+:root[data-theme="dark"] .drp-grid button.end,
+:root[data-theme="dark"] .brand-mark:not(.light),
+:root[data-theme="dark"] .access-brand > span { color: var(--canvas); }
+:root[data-theme="dark"] .message-row.user .rich-text code { background: rgba(0,0,0,.18); }
 
 
 /* Agent creation wizard (Fase 1). Built on the existing design tokens. */

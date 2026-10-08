@@ -21,7 +21,7 @@ export function WebChatSetup({ client, onBack }: ChannelSetupProps) {
   const [agentId, setAgentId] = useState(client.agents[0]?.id || "");
   const [enabled, setEnabled] = useState(true);
   const [greeting, setGreeting] = useState("");
-  const [color, setColor] = useState("#075985");
+  const [color, setColor] = useState("#111111");
   const [position, setPosition] = useState<"right" | "left">("right");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -34,7 +34,7 @@ export function WebChatSetup({ client, onBack }: ChannelSetupProps) {
         setAgentId(current.agent_id);
         setEnabled(current.is_enabled);
         setGreeting(current.greeting);
-        setColor(current.color || "#075985");
+        setColor(current.color || "#111111");
         setPosition(current.position);
       })
       .catch((err) => {
