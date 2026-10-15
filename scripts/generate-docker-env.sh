@@ -16,9 +16,9 @@ encryption_key=$(openssl rand -hex 32)
 bridge_token=$(openssl rand -hex 32)
 
 {
-  echo "POSTGRES_DB=openlivery"
-  echo "POSTGRES_TEST_DB=openlivery_test"
-  echo "POSTGRES_USER=openlivery"
+  echo "POSTGRES_DB=palawan_collective"
+  echo "POSTGRES_TEST_DB=pc_test"
+  echo "POSTGRES_USER=palawan_collective"
   echo "POSTGRES_PASSWORD=$postgres_password"
   echo
   echo "SECRET_KEY=$secret_key"

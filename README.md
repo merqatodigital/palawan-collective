@@ -13,7 +13,7 @@
   <a href="docs/es/"><strong>Documentación</strong></a> ·
   <a href="docs/en/getting-started.md">Quick start</a> ·
   <a href="docs/en/self-hosting.md">Self-hosting</a> ·
-  <a href="https://github.com/sanvicpalawan/openlivery/discussions">Discussions</a>
+  <a href="https://github.com/sanvicpalawan/palawan-collective/discussions">Discussions</a>
 </p>
 
 <p align="center">
@@ -31,7 +31,9 @@ WhatsApp or an embeddable web chat widget. Bring your own OpenRouter key and
 self-host the whole thing with one command.
 
 Palawan Collective is a fork of the open-source
-[OpenLivery](https://github.com/sarrazola/openlivery) project.
+[OpenLivery](https://github.com/sarrazola/openlivery) project by sarrazola, maintained by
+Palawan Collective. We are grateful to the original authors: the upstream copyright and
+MIT license notice are preserved in [LICENSE](./LICENSE).
 
 First-run setup creates your agency and owner account, then public registration
 closes. Add as many client workspaces as your agency needs inside that installation.
@@ -108,8 +110,8 @@ Read more in the [architecture guide](docs/en/architecture.md).
 Requires Docker (Desktop or Engine + Compose plugin).
 
 ```bash
-git clone https://github.com/sanvicpalawan/openlivery.git
-cd openlivery
+git clone https://github.com/sanvicpalawan/palawan-collective.git
+cd palawan-collective
 ./scripts/generate-docker-env.sh   # random secrets in .env.docker (gitignored)
 make up                            # build, start, migrate
 ```
@@ -125,8 +127,8 @@ Deploying to a public server (reverse proxy, TLS, backups) is covered in
 
 ## Community & support
 
-- **[GitHub Discussions](https://github.com/sanvicpalawan/openlivery/discussions)** — questions, ideas and help building with Palawan Collective.
-- **[GitHub Issues](https://github.com/sanvicpalawan/openlivery/issues)** — bugs and feature requests.
+- **[GitHub Discussions](https://github.com/sanvicpalawan/palawan-collective/discussions)** — questions, ideas and help building with Palawan Collective.
+- **[GitHub Issues](https://github.com/sanvicpalawan/palawan-collective/issues)** — bugs and feature requests.
 
 ## Project structure
 

@@ -82,7 +82,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
-    title="OpenLivery API",
+    title="Palawan Collective API",
     description="API to manage agencies, clients and AI agents.",
     version="0.3.0",
     lifespan=lifespan,

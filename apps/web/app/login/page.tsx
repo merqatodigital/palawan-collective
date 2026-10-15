@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Bot, Building2, LoaderCircle, MessageSquareText, ShieldCheck } from "lucide-react";
+import { LoaderCircle, ShieldCheck } from "lucide-react";
 import { api, messageFrom } from "@/lib/api";
 import { useT } from "@/lib/i18n";
 import { Alert } from "@/components/ui";
@@ -50,7 +50,7 @@ export default function LoginPage() {
   return (
     <main className="access-page agency-access">
       <header className="access-topbar">
-        <div className="access-brand"><span className="openlivery-icon"><img className="logo-light" src="/brand/mark-black.png" alt="" /><img className="logo-dark" src="/brand/mark-white.png" alt="" /></span><strong>Palawan Collective</strong></div>
+        <div className="access-brand"><span className="pc-icon"><img className="logo-light" src="/brand/mark-black.png" alt="" /><img className="logo-dark" src="/brand/mark-white.png" alt="" /></span><strong>Palawan Collective</strong></div>
         <small>{t("auth.tagline")}</small>
       </header>
       <div className="access-layout">
@@ -58,15 +58,6 @@ export default function LoginPage() {
           <span className="access-eyebrow">{t("auth.introEyebrow")}</span>
           <h1>{t("auth.introTitle")}</h1>
           <p>{t("auth.introDescription")}</p>
-          <div className="access-preview" aria-hidden="true">
-            <header><div><span className="preview-logo openlivery-icon"><img className="logo-light" src="/brand/mark-black.png" alt="" /><img className="logo-dark" src="/brand/mark-white.png" alt="" /></span><strong>{t("auth.previewTitle")}</strong></div><small>{t("auth.previewToday")}</small></header>
-            <div className="preview-metrics"><article><span>{t("auth.previewClientsActive")}</span><strong>12</strong></article><article><span>{t("auth.previewAgents")}</span><strong>28</strong></article><article><span>{t("auth.previewConversations")}</span><strong>846</strong></article></div>
-            <div className="preview-list">
-              <div><span className="preview-icon"><Building2 size={16} /></span><p><strong>{t("auth.previewClinicName")}</strong><small>{t("auth.previewClinicMeta")}</small></p><em>{t("auth.previewActive")}</em></div>
-              <div><span className="preview-icon"><MessageSquareText size={16} /></span><p><strong>{t("auth.previewInboxTitle")}</strong><small>{t("auth.previewInboxMeta")}</small></p><em>{t("auth.previewInboxTag")}</em></div>
-              <div><span className="preview-icon"><Bot size={16} /></span><p><strong>{t("auth.previewKnowledgeTitle")}</strong><small>{t("auth.previewKnowledgeMeta")}</small></p><em>{t("auth.previewReady")}</em></div>
-            </div>
-          </div>
         </section>
         <section className="access-form-wrap">
           <div className="access-card">

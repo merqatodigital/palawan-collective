@@ -1,0 +1,8 @@
+# Shell scripts and makefiles must keep LF endings. Git for Windows checks out
+# CRLF by default, which breaks `#!/bin/sh` inside the Docker containers.
+* text=auto
+*.sh text eol=lf
+Makefile text eol=lf
+Dockerfile text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf

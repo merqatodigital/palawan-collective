@@ -1605,7 +1605,7 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
 
 /* Palawan Collective identity: monochrome primary (black on light, white on dark),
    green kept as the secondary accent and neutral surfaces throughout. */
-.openlivery-icon {
+.pc-icon {
   width: 32px !important;
   height: 32px !important;
   min-width: 32px;
@@ -1620,7 +1620,7 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
   background: var(--canvas) !important;
   box-shadow: none !important;
 }
-.openlivery-icon img {
+.pc-icon img {
   width: 86% !important;
   height: 86% !important;
   max-width: none !important;
@@ -1628,11 +1628,11 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
   object-fit: contain;
 }
 /* Turtle mark follows the theme: black on light canvases, white on dark. */
-.openlivery-icon img.logo-dark { display: none; }
-:root[data-theme="dark"] .openlivery-icon img.logo-light { display: none; }
-:root[data-theme="dark"] .openlivery-icon img.logo-dark { display: inline; }
-.brand .openlivery-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
-.preview-logo.openlivery-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
+.pc-icon img.logo-dark { display: none; }
+:root[data-theme="dark"] .pc-icon img.logo-light { display: none; }
+:root[data-theme="dark"] .pc-icon img.logo-dark { display: inline; }
+.brand .pc-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
+.preview-logo.pc-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
 
 .brand-row { padding-bottom: 14px; }
 .brand { color: var(--accent-text); font-size: 16px; font-weight: 700; }
@@ -1687,7 +1687,7 @@ input:focus, textarea:focus, select:focus, .phone-input:focus-within { border-co
 .settings-intro, .security-note { color: var(--accent-text); border-color: var(--line); background: var(--canvas); }
 .wa-side > svg { color: var(--green-text); }
 
-.access-brand > .openlivery-icon { background: var(--canvas) !important; }
+.access-brand > .pc-icon { background: var(--canvas) !important; }
 .access-brand strong { color: var(--accent-text); font-size: 16px; }
 .preview-logo, .preview-icon { color: var(--accent-text); background: var(--accent-soft); }
 .access-card-label { color: var(--green-text); }
