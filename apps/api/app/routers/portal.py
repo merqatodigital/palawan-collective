@@ -11,12 +11,15 @@ from fastapi import APIRouter, Cookie, Depends, Header, File, Form, HTTPExceptio
 from sqlalchemy import Interval, and_, case, exists, func, literal, or_, select
 from sqlalchemy.orm import Session, joinedload, selectinload
 
+from pydantic import BaseModel, Field
+
 from ..config import get_settings
 from ..database import get_db, new_session
-from ..models import Agency, Agent, CannedResponse, Client, Contact, ContactTag, ContactTagLink, Conversation, Message, PortalUser, Team, WhatsAppChannel, WhatsAppCloudChannel, now_utc
+from ..models import Agency, Agent, CannedResponse, Client, Contact, ContactTag, ContactTagLink, Conversation, Message, PortalUser, PushDevice, Team, WhatsAppChannel, WhatsAppCloudChannel, now_utc
 from ..portal_permissions import CANNED_MANAGE, CONTACTS_MANAGE, INBOX_DELETE, REPORTS_VIEW, TAGS_MANAGE, TEAMS_MANAGE, TEMPLATES_MANAGE, has_permission, permissions_for
 from ..ratelimit import login_rate_limit, public_asset_rate_limit
 from ..services.report_conversations import AD_FIELDS, ConversationListFilters, export_csv, facets, list_conversations
+from ..services import webpush
 from ..schemas import ConversationFacets, ConversationReportPage
 from ..schemas import (
     ContactBlockUpdate,
@@ -49,6 +52,8 @@ from ..schemas import (
     TemplateSampleOut,
     TemplateSend,
     ConversationDetail,
+    ConversationSummaryOut,
+    ConversationSummaryRequest,
     ConversationAssignmentUpdate,
     ConversationModeUpdate,
     ConversationStatusUpdate,
@@ -77,12 +82,14 @@ from ..services.whatsapp_templates import (
     create_template,
     delete_template,
     list_templates,
+    message_buttons,
     read_sample,
     rendered_text,
     send_components,
     send_template,
     template_credentials,
     upload_sample,
+    with_reply_buttons,
     validate_template_name,
     window_is_open,
     window_open_until,
@@ -91,6 +98,7 @@ from ..services import reply_window
 from ..services.conversation_state import record_activity
 from ..services.conversation_state import ConversationClosed, assign, ensure_open, note_reply, set_archived, set_mode, set_status, set_team
 from ..services.routing import route_conversation
+from ..services.summary import SummaryUnavailable, summarize, summary_out
 from ..services.notifications import notify_assigned
 from ..services.attachments import attachment_response, conversation_attachment, logo_response
 from ..services.operator_media import store_operator_media_reply
@@ -258,6 +266,7 @@ def _detail(db: Session, client: Client, conversation_id: uuid.UUID) -> Conversa
 def public_portal(slug: str, db: Session = Depends(get_db)):
     client = _public_client(db, slug)
     agency = db.get(Agency, client.agency_id)
+    settings = get_settings()
     return {
         "client_name": client.name,
         "portal_title": client.portal_title or f"{client.name} Inbox",
@@ -268,6 +277,8 @@ def public_portal(slug: str, db: Session = Depends(get_db)):
         # the client logo when set.
         "agency_logo_url": f"/api/portal/{slug}/logo" if agency.logo_data else None,
         "client_logo_url": f"/api/portal/{slug}/client-logo" if client.logo_mime else None,
+        "ios_app_url": (settings.portal_ios_app_url or "").strip() or None,
+        "android_app_url": (settings.portal_android_app_url or "").strip() or None,
     }
 
 
@@ -406,6 +417,93 @@ def portal_update_availability(
         "email": user.email,
         "availability": user.availability,
     }
+
+
+# --- Web push: the browser subscribes, the server remembers where to reach it. ---
+
+
+class WebPushConfigOut(BaseModel):
+    enabled: bool
+    # The VAPID public key the browser subscribes with; empty when off.
+    public_key: str = ""
+
+
+class WebPushSubscriptionIn(BaseModel):
+    # PushSubscription.toJSON(), as the browser gives it.
+    endpoint: str = Field(min_length=12, max_length=2000)
+    keys: dict[str, str]
+
+
+class WebPushSubscriptionOut(BaseModel):
+    registered: bool
+
+
+class WebPushForget(BaseModel):
+    endpoint: str = Field(min_length=12, max_length=2000)
+
+
+@router.get("/{slug}/push", response_model=WebPushConfigOut)
+def portal_push_config(slug: str, client: Client = Depends(_portal_client)):
+    """Whether this server notifies browsers, and the key to subscribe with."""
+    return WebPushConfigOut(enabled=webpush.enabled(), public_key=webpush.public_key())
+
+
+@router.post("/{slug}/push/subscriptions", response_model=WebPushSubscriptionOut)
+def portal_push_subscribe(
+    slug: str,
+    payload: WebPushSubscriptionIn,
+    client: Client = Depends(_portal_client),
+    user: PortalUser | None = Depends(_portal_user),
+    db: Session = Depends(get_db),
+):
+    """Register this browser for the person signed in.
+
+    Keyed on the subscription, so the same browser registering again (every
+    portal load does, cheaply) moves the row to whoever is signed in now rather
+    than leaving a subscription that rings for the previous person.
+    """
+    if not user or user.client_id != client.id:
+        raise HTTPException(status_code=401, detail="Sign in with your own user to receive notifications")
+    try:
+        subscription = webpush.Subscription.parse({"endpoint": payload.endpoint, "keys": payload.keys})
+    except webpush.WebPushError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    token = subscription.token()
+    device = db.scalar(select(PushDevice).where(PushDevice.token == token))
+    if device:
+        device.client_id = client.id
+        device.portal_user_id = user.id
+        device.provider = webpush.PROVIDER
+        device.platform = webpush.PLATFORM
+        device.last_seen_at = now_utc()
+    else:
+        db.add(PushDevice(client_id=client.id, portal_user_id=user.id, token=token, provider=webpush.PROVIDER, platform=webpush.PLATFORM))
+    db.commit()
+    return WebPushSubscriptionOut(registered=webpush.enabled())
+
+
+@router.delete("/{slug}/push/subscriptions", status_code=status.HTTP_204_NO_CONTENT)
+def portal_push_unsubscribe(
+    slug: str,
+    payload: WebPushForget,
+    client: Client = Depends(_portal_client),
+    user: PortalUser | None = Depends(_portal_user),
+    db: Session = Depends(get_db),
+):
+    """Stop notifying this browser: the person switched it off or signed out."""
+    if not user or user.client_id != client.id:
+        raise HTTPException(status_code=401, detail="Sign in with your own user to change notifications")
+    rows = db.scalars(
+        select(PushDevice).where(PushDevice.client_id == client.id, PushDevice.provider == webpush.PROVIDER)
+    ).all()
+    for row in rows:
+        try:
+            if webpush.Subscription.parse(row.token).endpoint == payload.endpoint:
+                db.delete(row)
+        except webpush.WebPushError:
+            db.delete(row)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get("/{slug}/agents", response_model=list[AgentSummary])
@@ -1672,8 +1770,8 @@ def portal_report(
     )
 
 
-async def _send_template_to(db: Session, client: Client, to: str, payload: TemplateSend, channel: WhatsAppCloudChannel | None) -> tuple[str | None, str]:
-    """Send the template from ``channel`` and return (external id, text as the person reads it)."""
+async def _send_template_to(db: Session, client: Client, to: str, payload: TemplateSend, channel: WhatsAppCloudChannel | None) -> tuple[str | None, str, list[dict] | None]:
+    """Send the template from ``channel`` and return (external id, text as the person reads it, its buttons)."""
     if channel is None:
         raise HTTPException(status_code=409, detail="This conversation's WhatsApp API number no longer exists")
     token, waba_id = template_credentials(db, client, channel)
@@ -1694,7 +1792,7 @@ async def _send_template_to(db: Session, client: Client, to: str, payload: Templ
     external_id = await send_template(
         token, channel.phone_number_id, to, name=payload.name, language=payload.language, components=components
     )
-    return external_id, rendered_text(approved, body_values=payload.variables, header_value=payload.header_value)
+    return external_id, rendered_text(approved, body_values=payload.variables, header_value=payload.header_value), message_buttons(approved)
 
 
 @router.post("/{slug}/contacts/{contact_id}/conversations", response_model=ConversationDetail, status_code=status.HTTP_201_CREATED)
@@ -1754,8 +1852,9 @@ async def portal_start_conversation(
     db.add(conversation)
     db.flush()
 
+    buttons = None
     if channel_name == "whatsapp_cloud":
-        external_message_id, text = await _send_template_to(db, client, contact.phone, payload.template, channel_row)
+        external_message_id, text, buttons = await _send_template_to(db, client, contact.phone, payload.template, channel_row)
     else:
         text = payload.text.strip()
         external_message_id = await send_channel_message(db, conversation, text)
@@ -1765,6 +1864,8 @@ async def portal_start_conversation(
             conversation_id=conversation.id,
             role="assistant",
             content=text,
+            llm_content=with_reply_buttons(text, buttons) if buttons else None,
+            buttons=buttons,
             sender_type="human",
             sender_name=sender_name,
             portal_user_id=user.id if user else None,
@@ -1799,7 +1900,7 @@ async def portal_reply_template(
     if conversation.phone_pause_until is not None:
         set_mode(db, conversation, "human")
         db.commit()
-    external_message_id, text = await _send_template_to(
+    external_message_id, text, buttons = await _send_template_to(
         db, client, conversation.external_chat_id, payload, _cloud_channel(db, client, conversation.whatsapp_cloud_channel_id)
     )
     db.add(
@@ -1807,6 +1908,8 @@ async def portal_reply_template(
             conversation_id=conversation.id,
             role="assistant",
             content=text,
+            llm_content=with_reply_buttons(text, buttons) if buttons else None,
+            buttons=buttons,
             sender_type="human",
             sender_name=sender_name,
             portal_user_id=user.id if user else None,
@@ -1949,6 +2052,33 @@ def portal_delete_conversation(
 @router.get("/{slug}/conversations/{conversation_id}", response_model=ConversationDetail)
 def portal_conversation(slug: str, conversation_id: uuid.UUID, client: Client = Depends(_portal_client), db: Session = Depends(get_db)):
     return _present(_detail(db, client, conversation_id))
+
+
+@router.get("/{slug}/conversations/{conversation_id}/summary", response_model=ConversationSummaryOut)
+def portal_conversation_summary(slug: str, conversation_id: uuid.UUID, client: Client = Depends(_portal_client), db: Session = Depends(get_db)):
+    """The stored summary, if anyone asked for one. Reading it costs nothing."""
+    return summary_out(db, _detail(db, client, conversation_id))
+
+
+@router.post("/{slug}/conversations/{conversation_id}/summary", response_model=ConversationSummaryOut)
+async def portal_summarize_conversation(
+    slug: str,
+    conversation_id: uuid.UUID,
+    payload: ConversationSummaryRequest,
+    client: Client = Depends(_portal_client),
+    user: PortalUser | None = Depends(_portal_user),
+    db: Session = Depends(get_db),
+):
+    """Write the summary with the conversation agent's model, billed like a reply.
+    Returns the stored one without calling the model when nothing new arrived."""
+    conversation = _detail(db, client, conversation_id)
+    try:
+        return await summarize(db, conversation, payload.language, requested_by=user and (user.name or user.email))
+    except SummaryUnavailable as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    except Exception as exc:  # noqa: BLE001 - a provider error reads as a message, not a 500
+        logger.warning("Summary failed for conversation %s: %s", conversation_id, exc)
+        raise HTTPException(status_code=502, detail="The summary could not be written. Try again in a moment.") from exc
 
 
 @router.patch("/{slug}/conversations/{conversation_id}/mode", response_model=ConversationDetail)

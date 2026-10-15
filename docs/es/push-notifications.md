@@ -2,7 +2,7 @@
 
 > Read in English: [push-notifications.md](../en/push-notifications.md)
 
-Palawan Collective trae la *fontanería* de notificaciones y ningún *proveedor*. En una
+OpenLivery trae la *fontanería* de notificaciones y ningún *proveedor*. En una
 instalación por defecto no hay cuenta que crear, ningún tercero involucrado y
 nada que pagar: `PUSH_PROVIDER` vale `none` y el servidor no envía nada.
 
@@ -19,7 +19,7 @@ ese servidor envía.
 
 La consecuencia práctica:
 
-- **Corres tu propio Palawan Collective y usas la app oficial de la tienda.** Esa app
+- **Corres tu propio OpenLivery y usas la app oficial de la tienda.** Esa app
   lee y responde todo en tu servidor sin problema, pero no puede recibir push
   desde él: la compilación de la tienda solo acepta notificaciones de las
   credenciales con las que se firmó, que son de quien la publicó. Es el modelo
@@ -64,7 +64,7 @@ una cola, o un script de cinco líneas que llame al servicio que ya pagas.
 
 ```bash
 PUSH_PROVIDER=webhook
-PUSH_WEBHOOK_URL=https://example.com/pc-push
+PUSH_WEBHOOK_URL=https://example.com/openlivery-push
 PUSH_WEBHOOK_SECRET=a-shared-secret   # optional; sent as a Bearer token
 ```
 
@@ -103,6 +103,42 @@ Las filas de dispositivos recuerdan qué proveedor emitió su token, y los token
 de un proveedor que ya no usas se saltan en vez de enviarse a un sitio donde no
 pueden llegar. Después de cambiar de proveedor, las apps se vuelven a registrar
 en su siguiente arranque.
+
+## Navegadores: el portal, sin proveedor
+
+Los teléfonos necesitan un proveedor porque sus credenciales push pertenecen a
+quien compiló la app. Los navegadores no: el protocolo Web Push deja que
+cualquier servidor entregue a cualquier navegador siempre que firme con un par
+de claves propio (VAPID). Así el portal puede avisar con el portal cerrado y el
+navegador abierto, en una instalación propia, sin cuenta en ningún sitio.
+
+Se enciende generando el par de claves una vez y conservándolo:
+
+```bash
+python -m app.webpush_keys
+# PUSH_WEBPUSH_PRIVATE_KEY=...
+```
+
+Pon la clave privada en `PUSH_WEBPUSH_PRIVATE_KEY` y, si quieres, a quién pueden
+contactar los fabricantes de navegadores sobre este remitente en
+`PUSH_WEBPUSH_SUBJECT` (`mailto:ops@ejemplo.com`). La mitad pública se deriva en
+tiempo de ejecución y se entrega a la página. No rotes la clave a la ligera:
+todo navegador suscrito con la anterior tiene que suscribirse de nuevo.
+
+Desde entonces cada persona tiene un interruptor **Notificaciones del
+navegador** en Ajustes, Preferencias, de su portal. Al encenderlo el navegador
+pide permiso, la suscripción se registra para esa persona y el servidor entrega
+directo al servicio push del navegador (`apps/api/app/services/webpush.py`,
+RFC 8030, 8291 y 8292). Las suscripciones viven en el mismo registro de
+dispositivos que los teléfonos, bajo el proveedor `webpush`, y llegan a las
+mismas personas que ellos. Una suscripción que el servicio push declara
+desaparecida (permiso revocado, navegador reiniciado) se descarta en el acto.
+Mientras una ventana del portal está visible, la página muestra el mensaje en
+su sitio en vez de levantar una notificación del sistema encima.
+
+Web push es independiente de `PUSH_PROVIDER`: un despliegue puede avisar a los
+teléfonos por un proveedor y a los navegadores directamente, o solo a los
+navegadores.
 
 ## A quién se notifica
 

@@ -22,6 +22,13 @@ Docker stack; run `alembic upgrade head` on local setups).
 
 ### Added
 
+- **Summarize conversation** in the portal conversation's menu, for admins and agents. The summary is written on request only, with the conversation agent's model and key, and recorded as usage with `purpose` `summary`; the cost report labels those rows. It is stored on the conversation with who asked for it (`summary_by`) and shown folded above the thread for the team, never sent to the contact. Asking again before new messages arrive returns the stored one without a model call, and summarizing does not move the conversation in the inbox. Routes: `GET`/`POST /api/portal/{slug}/conversations/{id}/summary`. Migration `0057` adds `conversations.summary`, `summary_at`, `summary_message_count`, `summary_by` and `usage_records.purpose`.
+- **Generate password** in the dialog that adds or edits a person of a client's portal: a 16-character password with upper and lower case letters, digits and symbols (look-alike characters left out), from the browser's cryptographic generator, fills both fields, shows them, and **Copy password** puts it on the clipboard to pass on.
+- Hours of service, a new section in the agent's settings: **Answer only on certain days and hours** puts the agent on duty inside the weekdays and hours you pick, read in the client's timezone. Outside them an inbound message is kept and nobody answers, with no model call, exactly like an inactive agent, and the agent comes back on by itself; follow-ups and the phone handover wait the same way. The agent's page says **Off duty** while that is the case. `schedule_enabled` and `schedule_slots` (`[{day, start, end}]`, Monday is 0, `"HH:MM"`, `"24:00"` ends the day) on the agent routes. Migration `0056` adds both columns to `agents`.
+- A provider key can be paused without deleting it: **Use this key** under Settings, AI providers keeps the key stored while replies stop using it, and what answers in its place, if anything, is whatever the deployment lends. `PATCH /api/providers/{provider}` with `{"enabled": bool}`; `GET /api/providers` gains `stored` and `enabled`. Migration `0056` adds `provider_credentials.enabled`.
+- The portal shows where its people can get the deployment's mobile app: `PORTAL_IOS_APP_URL` and `PORTAL_ANDROID_APP_URL` put the stores' own badges under the preview on the sign-in page and as a **Mobile app** row under Settings, Preferences. `GET /api/portal/{slug}` carries them as `ios_app_url` and `android_app_url`; empty shows nothing.
+- The portal's side panel folds to its icons with a toggle on its edge, remembered per browser.
+- Web push for the portal, with no provider: a deployment that sets `PUSH_WEBPUSH_PRIVATE_KEY` (one key pair, printed by `python -m app.webpush_keys`) lets each person switch on **Browser notifications** under Settings, Preferences, and the server delivers to the browser's own push service with the portal closed. The same people ring as on the phones: assignments, and new messages in conversations in human hands. Routes: `GET /api/portal/{slug}/push`, `POST` and `DELETE /api/portal/{slug}/push/subscriptions`; the service worker is `/push-worker.js`. Migration `0055` widens `push_devices.token`. See `docs/en/push-notifications.md`.
 - Template webhooks, a new **Webhooks** tab on the client. A webhook binds one WhatsApp Cloud API number to one approved template and gets its own address; another system posts the phone and the template's variables to it (`POST /api/public/hooks/{id}`, with the webhook's secret as a bearer; the secret is shown once and can be regenerated) and the template goes out, stored as the agent's message in the contact's open conversation or in a new one, so the agent answers the reply with it in its history. A template is always what is sent, open reply window or not. `context` carries notes only the model reads, `idempotency_key` keeps a retry from sending twice, and a conversation in a person's hands stays there. Routes: `/api/clients/{id}/webhooks` (list, create, update, delete), `POST /api/clients/{id}/webhooks/{webhook_id}/secret` and `/api/clients/{id}/webhooks/templates`. Migration `0053` adds `template_webhooks` and `template_webhook_deliveries`. See `docs/en/template-webhooks.md`.
 - Follow-up and closing, a new section in the agent's settings. **Follow up on inactivity**: when a contact stops answering, the agent gets back in touch through rules added one at a time, up to two reminders and a closing message that resolves the conversation, each after a time in minutes or hours counted from the agent's last message (23 hours at most, so every message leaves inside the 24-hour reply window). Each message is written by the model from the thread or is a custom text sent as written, with no model call. The schedule is per agent, with the channels it applies to, and stops the moment the contact writes, a person takes the conversation or it is escalated. **Let the agent resolve the conversation** (off by default) gives the agent a `resolve_conversation` tool for cases whose request is settled: the farewell goes out first and the case closes two minutes later unless the contact writes back. The thread says how a case ended (`resolved_by_agent`, `closed_unanswered`, next to the existing `auto_resolved`, which stays as the fallback). Routes: `GET`/`PUT /api/agents/{id}/follow-ups`. Setting: `FOLLOW_UP_SWEEP_SECONDS` (60) paces the timer that sends what is due; a deployment that replaces the app lifespan calls `services.follow_ups.run_due(db)` itself. Migration `0052` adds the schedule to `agents` and the clock (`follow_up_*`, `pending_resolution`) to `conversations`. See `docs/en/agents.md`.
 - GPT-6 Luna, GPT-6 Sol and GPT-6 Astra join the model presets; GPT-6 Luna is the recommended default the agent wizard preselects.
@@ -539,7 +546,7 @@ dependency (`pip install -r requirements.txt`).
 
 ### Documentation
 
-- Full documentation site at [github.com/sanvicpalawan/palawan-collective/tree/main/docs](https://github.com/sanvicpalawan/palawan-collective/tree/main/docs) with per-feature guides in English and Spanish.
+- Full documentation site at [openlivery.com/docs](https://openlivery.com/docs) with per-feature guides in English and Spanish.
 - README restructured around the documentation site, with each feature linking to its guide.
 - Corrected the WhatsApp inbound route in `CLAUDE.md`.
 
@@ -578,8 +585,8 @@ First tagged release.
 - Custom per-client portal domains with on-demand TLS.
 - README and self-hosting guide.
 
-[Unreleased]: https://github.com/sanvicpalawan/palawan-collective/compare/v0.4.0...HEAD
-[0.4.0]: https://github.com/sanvicpalawan/palawan-collective/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/sanvicpalawan/palawan-collective/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/sanvicpalawan/palawan-collective/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/sanvicpalawan/palawan-collective/releases/tag/v0.1.0
+[Unreleased]: https://github.com/sarrazola/openlivery/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/sarrazola/openlivery/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/sarrazola/openlivery/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/sarrazola/openlivery/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/sarrazola/openlivery/releases/tag/v0.1.0

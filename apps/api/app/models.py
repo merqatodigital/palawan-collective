@@ -123,6 +123,9 @@ class ProviderCredential(Base):
     agency_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("agencies.id", ondelete="CASCADE"), index=True)
     provider: Mapped[str] = mapped_column(String(30))
     encrypted_api_key: Mapped[str] = mapped_column(Text)
+    # A paused key stays stored but answers nothing: replies fall through to
+    # what the deployment lends, if anything, exactly as if no key were held.
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, onupdate=now_utc)
 
@@ -200,6 +203,13 @@ class Agent(Base):
     follow_up_second_text: Mapped[str | None] = mapped_column(Text, nullable=True)
     follow_up_close_text: Mapped[str | None] = mapped_column(Text, nullable=True)
     follow_up_channels: Mapped[list] = mapped_column(JSON, default=list, server_default="[]")
+    # When the agent is on duty. Off, it answers whenever it is active; on, it
+    # answers only inside ``schedule_slots``, each ``{"day", "start", "end"}``
+    # with the weekday as 0 (Monday) to 6 (Sunday) and the bounds as "HH:MM"
+    # in the client's timezone. Outside them messages are kept and nobody
+    # answers, like an inactive agent, but it switches back on by itself.
+    schedule_enabled: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
+    schedule_slots: Mapped[list] = mapped_column(JSON, default=list, server_default="[]")
     # Set when the agent is deleted. The row stays so the conversations it
     # handled keep its name; everything it owned (knowledge, tools, rules)
     # is purged and it disappears from every list.
@@ -498,6 +508,9 @@ class UsageRecord(Base):
     served_by: Mapped[str] = mapped_column(String(60), default="", server_default="")
     cached_tokens: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     reasoning_tokens: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    # What the call was for: "reply" (an answer to the contact, follow-ups
+    # included) or "summary" (a conversation summary a person asked for).
+    purpose: Mapped[str] = mapped_column(String(20), default="reply", server_default="reply")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc, index=True)
 
 
@@ -701,6 +714,14 @@ class Conversation(Base):
     # or sent its closing message, and the case ends once that message had
     # time to go out, unless the contact writes first.
     pending_resolution: Mapped[dict | None] = mapped_column(JSON(none_as_null=True), nullable=True)
+    # A summary a person asked for (services.summary), for the team only and
+    # never sent to the contact. ``summary_message_count`` is how many
+    # exchanged messages it covered, so it is regenerated only once more arrive.
+    summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    summary_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    summary_message_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    # Who asked for the stored summary: the portal person's name or e-mail.
+    summary_by: Mapped[str | None] = mapped_column(String(160), nullable=True)
     taken_over_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     # The portal user handling this conversation, when a person is. Cleared
     # when it goes back to the AI or is released for someone else to take.
@@ -822,6 +843,9 @@ class Message(Base):
     reaction: Mapped[str | None] = mapped_column(String(16), nullable=True)
     # The customer's emoji reaction to this message, as reported by WhatsApp.
     incoming_reaction: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    # The buttons a template message carried, as ``[{"type", "text"}]``, so the
+    # portal shows the message the way the customer saw it.
+    buttons: Mapped[list | None] = mapped_column(JSON, nullable=True)
     # Set when this reply quotes a specific earlier message (swipe-to-reply).
     quoted_message_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("messages.id", ondelete="SET NULL"), nullable=True
@@ -1009,7 +1033,9 @@ class PushDevice(Base):
     portal_user_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("portal_users.id", ondelete="CASCADE"), nullable=True, index=True
     )
-    token: Mapped[str] = mapped_column(String(400), unique=True, index=True)
+    # Text, not a bounded string: a browser subscription (endpoint plus two
+    # keys) is longer than any native token.
+    token: Mapped[str] = mapped_column(Text, unique=True, index=True)
     provider: Mapped[str] = mapped_column(String(40), default="")
     platform: Mapped[str] = mapped_column(String(20), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now_utc)

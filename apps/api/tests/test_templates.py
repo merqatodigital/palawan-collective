@@ -17,6 +17,7 @@ APPROVED = normalize({
     "components": [
         {"type": "BODY", "text": "Hola {{nombre}}, te escribimos de {{empresa}}."},
         {"type": "FOOTER", "text": "Responde para continuar."},
+        {"type": "BUTTONS", "buttons": [{"type": "QUICK_REPLY", "text": "Sí, cuéntame"}]},
     ],
 })
 PENDING = normalize({
@@ -43,6 +44,15 @@ def _portal_with_cloud_line(client: TestClient):
     assert created.status_code in (200, 201), created.text
     client.post(f"/api/portal/{customer['portal_slug']}/login", json={"email": "ana@outbound.com", "password": "secure-portal"})
     return customer
+
+
+def test_the_category_meta_moved_a_template_from_is_kept():
+    moved = normalize({
+        "id": "9", "name": "offer", "language": "es", "category": "MARKETING", "previous_category": "UTILITY",
+        "status": "APPROVED", "components": [{"type": "BODY", "text": "Hola"}],
+    })
+    assert moved["category"] == "MARKETING" and moved["previous_category"] == "UTILITY"
+    assert APPROVED["previous_category"] is None
 
 
 def test_a_template_is_deleted_through_the_business_account(authenticated_client: TestClient, monkeypatch):
@@ -156,6 +166,11 @@ def test_a_template_starts_a_conversation_and_the_window_rules_replies(authentic
     assert kinds[0] == ("activity", {"event": "started"})
     assert conv["messages"][-1]["content"] == "Hola Sam, te escribimos de Outbound Co.\n\nResponde para continuar."
     assert conv["messages"][-1]["external_message_id"] == "wamid.1"
+    # The portal shows the buttons the person got; the agent reads them as the answers on offer.
+    assert conv["messages"][-1]["buttons"] == [{"type": "QUICK_REPLY", "text": "Sí, cuéntame"}]
+    with SessionLocal() as db:
+        first = db.query(Message).filter(Message.external_message_id == "wamid.1").one()
+        assert first.llm_content.endswith('[Reply buttons under this message: "Sí, cuéntame"]')
 
     # The window is closed until the person answers: free text is refused, a template goes.
     base = f"/api/portal/{slug}/conversations/{conv['id']}"

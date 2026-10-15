@@ -7,6 +7,7 @@ const en = {
   access: {
     secureBadge: "Secure client portal",
     eyebrow: "Client portal",
+    apps: "Also on your phone",
     intro:
       "Review the conversations, follow along with the agent, and take control whenever a person needs to step in.",
     preview: {
@@ -39,6 +40,8 @@ const en = {
   templates: {
     intro: "Approved templates are the only way to write to someone first, or after 24 hours without a reply from them. Meta reviews each one.",
     new: "New template",
+    refresh: "Refresh",
+    recategorized: "Meta moved it from {from}",
     newTitle: "New template",
     newDescription: "Meta reviews it before it can be sent. Approval usually takes minutes, sometimes a day.",
     emptyTitle: "No templates yet",
@@ -514,6 +517,14 @@ const en = {
     },
     conversation: {
       channel: "Channel: {channel}",
+      summarize: "Summarize conversation",
+      summaryTitle: "Conversation summary",
+      summaryWriting: "Writing the summary…",
+      summaryMeta: "{count} messages · {when}",
+      summaryStale: "New messages since this summary",
+      summaryUpdate: "Update",
+      summaryClose: "Hide summary",
+      summaryPrivate: "Only your team sees this. It is not sent to the customer.",
       viewContact: "View the contact's card",
       contactCard: "Contact",
       contactCardClose: "Close",
@@ -586,6 +597,7 @@ const es: typeof en = {
   access: {
     secureBadge: "Portal seguro de cliente",
     eyebrow: "Portal de cliente",
+    apps: "También en tu celular",
     intro:
       "Revisa las conversaciones, acompaña al agente y toma el control cuando una persona necesite intervenir.",
     preview: {
@@ -618,6 +630,8 @@ const es: typeof en = {
   templates: {
     intro: "Las plantillas aprobadas son la única forma de escribirle primero a alguien, o después de 24 horas sin respuesta. Meta revisa cada una.",
     new: "Nueva plantilla",
+    refresh: "Actualizar",
+    recategorized: "Meta la cambió desde {from}",
     newTitle: "Nueva plantilla",
     newDescription: "Meta la revisa antes de que se pueda enviar. Suele tardar minutos, a veces un día.",
     emptyTitle: "Aún no hay plantillas",
@@ -1093,6 +1107,14 @@ const es: typeof en = {
     },
     conversation: {
       channel: "Canal: {channel}",
+      summarize: "Resumir conversación",
+      summaryTitle: "Resumen de la conversación",
+      summaryWriting: "Escribiendo el resumen…",
+      summaryMeta: "{count} mensajes · {when}",
+      summaryStale: "Hay mensajes nuevos desde este resumen",
+      summaryUpdate: "Actualizar",
+      summaryClose: "Ocultar resumen",
+      summaryPrivate: "Solo lo ve tu equipo. No se envía al cliente.",
       viewContact: "Ver la ficha del contacto",
       contactCard: "Contacto",
       contactCardClose: "Cerrar",

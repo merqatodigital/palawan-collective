@@ -332,6 +332,8 @@ def normalize(raw: dict) -> dict:
         "name": raw.get("name") or "",
         "language": raw.get("language") or "",
         "category": (raw.get("category") or "").upper(),
+        # Set by Meta when its review moved the template to another category.
+        "previous_category": (raw.get("previous_category") or "").upper() or None,
         "status": (raw.get("status") or "").upper(),
         "parameter_format": (raw.get("parameter_format") or parameter_format(names + (header or {}).get("parameters", []))).upper(),
         "header": header,
@@ -360,6 +362,22 @@ def rendered_text(template: dict, *, body_values: list[str], header_value: str =
     if template.get("footer"):
         parts.append(template["footer"])
     return "\n\n".join(parts)
+
+
+def message_buttons(template: dict) -> list[dict] | None:
+    """The buttons the contact sees under the message, kept on it as sent."""
+    buttons = [{"type": button["type"], "text": button.get("text") or ""} for button in template.get("buttons") or []]
+    return buttons or None
+
+
+def with_reply_buttons(text: str, buttons: list[dict] | None) -> str:
+    """What the model reads for a template with quick replies: the text plus
+    the labels the contact can tap, so a tap reads as the answer it is."""
+    labels = [button["text"] for button in buttons or [] if button["type"] == "QUICK_REPLY" and button.get("text")]
+    if not labels:
+        return text
+    quoted = ", ".join(f'"{label}"' for label in labels)
+    return f"{text}\n\n[Reply buttons under this message: {quoted}]"
 
 
 def send_components(
@@ -425,7 +443,7 @@ async def list_templates(access_token: str, waba_id: str) -> list[dict]:
         "GET",
         graph_url(
             f"{waba_id}/message_templates"
-            "?fields=id,name,status,category,language,parameter_format,components,rejected_reason&limit=200"
+            "?fields=id,name,status,category,previous_category,language,parameter_format,components,rejected_reason&limit=200"
         ),
         access_token,
     )

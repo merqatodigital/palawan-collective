@@ -15,7 +15,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Palawan Collective — AI agents for your agency",
+  title: "OpenLivery — AI agents for your agency",
   description: "Open source platform to build and manage AI agents.",
 };
 

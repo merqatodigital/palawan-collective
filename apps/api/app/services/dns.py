@@ -6,7 +6,7 @@ hitting a real resolver.
 
 import dns.resolver
 
-CHALLENGE_PREFIX = "_pc-challenge"
+CHALLENGE_PREFIX = "_openlivery-challenge"
 
 
 def challenge_host(domain: str) -> str:

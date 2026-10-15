@@ -1,4 +1,4 @@
-module github.com/sanvicpalawan/palawan-collective/apps/whatsapp
+module github.com/sarrazola/openlivery/apps/whatsapp
 
 go 1.27.0
 

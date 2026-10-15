@@ -2,7 +2,7 @@
 
 > Leer en español: [configuration.md](../es/configuration.md)
 
-Palawan Collective is configured through environment variables. In Docker, they all live in a single `.env.docker` file at the repository root; a helper script generates it with strong random secrets so you never have to invent them yourself.
+OpenLivery is configured through environment variables. In Docker, they all live in a single `.env.docker` file at the repository root; a helper script generates it with strong random secrets so you never have to invent them yourself.
 
 ## The .env.docker file
 
@@ -31,6 +31,10 @@ For a non-Docker local setup, the same variables go in a `.env` at the repo root
 | `WHATSAPP_BRIDGE_TOKEN` | Shared secret authenticating backend ↔ WhatsApp bridge calls. Use the same value on both | random |
 | `NEXT_PUBLIC_API_URL` | Public API origin baked into the frontend at build time. Leave empty to use the same origin via the gateway | empty |
 | `BACKEND_INTERNAL_URL` | How the web container reaches the API server-side (used by `proxy.ts` for custom portal domains) | `http://api:8000` |
+| `PUSH_PROVIDER` | Who delivers notifications to the mobile apps (`none`, `webhook`, or one a deployment registers). See [push notifications](push-notifications.md) | `none` |
+| `PUSH_WEBPUSH_PRIVATE_KEY` | VAPID private key that lets the portal notify browsers directly, with no provider. `python -m app.webpush_keys` prints one; keep it, rotating it unsubscribes every browser | empty (off) |
+| `PUSH_WEBPUSH_SUBJECT` | Who browser vendors may contact about the sender, as `mailto:` or a URL | `mailto:admin@localhost` |
+| `PORTAL_IOS_APP_URL`, `PORTAL_ANDROID_APP_URL` | Store pages of the mobile app this deployment publishes. The portal shows the stores' badges on its sign-in page and under Preferences; empty shows nothing | empty |
 
 ### The ENCRYPTION_KEY warning
 

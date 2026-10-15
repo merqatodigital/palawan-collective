@@ -27,12 +27,12 @@
   --faint: #aeb6cc;
   --on-dark: #e6ebf5;
   --inverse: #17203a;
-  --accent: #111111;
-  --accent-hover: #000000;
-  --accent-text: #111111;
-  --accent-soft: #f2f3f5;
-  --accent-line: #dcdfe4;
-  --accent-rgb: 17, 17, 17;
+  --accent: #075985;
+  --accent-hover: #064466;
+  --accent-text: #075985;
+  --accent-soft: #eaf3f5;
+  --accent-line: #c9dce4;
+  --accent-rgb: 7, 89, 133;
   --green: #00a67d;
   --green-text: #00866b;
   --green-soft: #e8f7f2;
@@ -91,12 +91,12 @@
   --faint: #56617b;
   --on-dark: #e8edf7;
   --inverse: #2f3a56;
-  --accent: #f4f5f7;
-  --accent-hover: #ffffff;
-  --accent-text: #e8edf7;
-  --accent-soft: #1f2738;
-  --accent-line: #3a4560;
-  --accent-rgb: 244, 245, 247;
+  --accent: #2a8ec4;
+  --accent-hover: #3b9fd4;
+  --accent-text: #7cc6ec;
+  --accent-soft: #152a3b;
+  --accent-line: #25506a;
+  --accent-rgb: 124, 198, 236;
   --green: #1fae86;
   --green-text: #5bd6ad;
   --green-soft: #12302a;
@@ -534,6 +534,8 @@ textarea { line-height: 1.55; }
 .secret { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
 .key-input { position: relative; display: block; }
 .secret-input { position: relative; display: block; }
+.password-generator { display: flex; flex-wrap: wrap; gap: 8px; margin-top: -6px; }
+.password-generator .button { gap: 6px; }
 .secret-input input { width: 100%; padding-right: 42px; }
 .key-input input { width: 100%; padding-right: 42px; font-family: var(--mono, ui-monospace, SFMono-Regular, Menlo, monospace); }
 .key-input .reveal, .secret-input .reveal { position: absolute; top: 50%; right: 6px; transform: translateY(-50%); height: 30px; width: 30px; display: inline-flex; align-items: center; justify-content: center; padding: 0; border: none; background: none; color: var(--muted); cursor: pointer; border-radius: 6px; }
@@ -714,11 +716,11 @@ textarea { line-height: 1.55; }
 .portal-client-avatar { width: 48px; height: 48px; display: grid; place-items: center; color: var(--portal-color); border-radius: 9px; background: var(--accent-soft); font-weight: 700; }
 .portal-login-form h2 { margin: 2px 0 -12px; font-size: 24px; }
 .portal-login-form p { color: var(--muted); }
-.portal-app { min-height: 100vh; display: grid; grid-template-columns: 230px minmax(0,1fr); background: var(--canvas); }
-.portal-nav { padding: 20px 14px; display: flex; flex-direction: column; border-right: 1px solid var(--line); background: var(--surface); }
+.portal-app { min-height: 100vh; display: grid; grid-template-columns: 248px minmax(0,1fr); background: var(--canvas); }
+.portal-nav { position: relative; padding: 20px 14px; display: flex; flex-direction: column; border-right: 1px solid var(--line); background: var(--surface); }
 .portal-nav .portal-brand { padding: 0 8px 22px; border-bottom: 1px solid var(--line-soft); }
 .portal-nav nav { padding-top: 18px; display: flex; flex-direction: column; gap: 4px; }
-.portal-nav nav a { height: 42px; padding: 0 10px; display: flex; align-items: center; gap: 10px; color: var(--muted); border-radius: 7px; }
+.portal-nav nav a { height: 42px; padding: 0 10px; display: flex; align-items: center; gap: 9px; color: var(--muted); border-radius: 7px; font-size: 13.5px; }
 .portal-nav nav a.active { color: var(--ink); background: var(--surface-3); }
 .portal-nav nav a { cursor: pointer; }
 .portal-nav nav a.disabled { cursor: default; opacity: .55; }
@@ -758,6 +760,25 @@ textarea { line-height: 1.55; }
 .confirm-word code { align-self: flex-start; padding: 8px 14px; border: 1px dashed var(--red); border-radius: 7px; color: var(--red-text); background: var(--red-soft); font-size: 15px; font-weight: 700; letter-spacing: .12em; }
 .confirm-word + input { margin-top: -8px; }
 .portal-nav nav a.disabled { opacity: .45; }
+/* The panel folded to its icons (the toggle on its edge, as the agency's
+   sidebar has). Labels hide, each item keeps its title for a tooltip, and the
+   unread count sits on the icon. */
+.portal-nav nav a > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* The generic `.portal-nav > button` rule strips borders and backgrounds; the
+   toggle needs the same solid disc the agency sidebar has. */
+.portal-nav > button.sidebar-toggle { position: absolute; top: 24px; right: -14px; width: 28px; height: 28px; margin: 0; padding: 0; display: grid; place-items: center; gap: 0; color: var(--muted); border: 1px solid var(--line); border-radius: 50%; background: var(--surface); box-shadow: var(--shadow); font-size: 0; }
+.portal-nav > button.sidebar-toggle:hover { color: var(--ink); border-color: var(--line-strong); }
+.portal-app.nav-collapsed { grid-template-columns: 72px minmax(0,1fr); }
+.nav-collapsed .portal-nav { padding-left: 10px; padding-right: 10px; }
+.nav-collapsed .portal-nav .portal-brand { justify-content: center; padding-left: 0; padding-right: 0; }
+.nav-collapsed .portal-nav .portal-brand strong { display: none; }
+.nav-collapsed .portal-nav nav a { position: relative; padding: 0; justify-content: center; gap: 0; }
+.nav-collapsed .portal-nav nav a > span { display: none; }
+.nav-collapsed .portal-nav nav a .nav-count { position: absolute; top: 4px; right: 4px; margin: 0; }
+.nav-collapsed .portal-nav-foot > button { justify-content: center; padding-left: 0; padding-right: 0; }
+.nav-collapsed .portal-nav-foot > button > span:not(.availability-switch) { display: none; }
+.nav-collapsed .portal-nav .availability-toggle { gap: 0; }
+.nav-collapsed .portal-nav .availability-switch { display: none; }
 .portal-nav > button { margin-top: auto; height: 40px; display: flex; align-items: center; gap: 9px; color: var(--muted); border: 0; background: transparent; }
 .portal-main { min-width: 0; padding: 32px; }
 .portal-main > header { margin-bottom: 22px; display: flex; align-items: flex-end; justify-content: space-between; }
@@ -841,6 +862,8 @@ textarea { line-height: 1.55; }
 /* A failed send shows why below the message, in the quiet register of the
    timestamp: the alert icon already carries the severity. */
 .msg-error { display: block; margin-top: 4px; font-size: 11px; line-height: 1.45; opacity: .85; }
+.msg-buttons { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.msg-buttons .mini-badge { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
 .portal-messages article.mine.ai .msg-error { color: var(--red-text); opacity: 1; }
 .window-pill { display: inline-flex; align-items: center; gap: 4px; margin-left: 0; padding: 2px 8px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
 .window-pill.open { color: var(--ink-2); background: var(--green-soft); }
@@ -856,6 +879,8 @@ textarea { line-height: 1.55; }
 .portal-templates { padding: 4px 0; }
 .portal-templates-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
 .portal-templates-toolbar p { margin: 0; max-width: 64ch; color: var(--muted); }
+.portal-templates-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.template-moved { display: block; margin-top: 2px; font-size: 11.5px; color: var(--amber-text); }
 .portal-templates-filters { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
 .template-search { display: flex; flex: 1; align-items: center; gap: 8px; min-width: 220px; max-width: 380px; height: 38px; padding: 0 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
 .template-search svg { flex: 0 0 auto; }
@@ -984,6 +1009,21 @@ textarea { line-height: 1.55; }
 .portal-inbox > section > header .mode-toggle, .portal-inbox > section > header .status-toggle { flex: 0 0 auto; }
 .portal-inbox > section > header div { display: flex; flex-direction: column; }
 .portal-inbox > section > header small { color: var(--subtle); }
+/* The summary a person asked for, pinned between the header and the thread. */
+.conversation-summary { margin: 10px 24px 0; border: 1px solid var(--accent-line); border-radius: 10px; background: var(--accent-soft); }
+.conversation-summary-head { display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px 12px; }
+.conversation-summary-toggle { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 2px 0; border: 0; background: none; color: var(--accent-text); font: inherit; text-align: left; cursor: pointer; }
+.conversation-summary-toggle strong { font-size: 13px; white-space: nowrap; }
+.conversation-summary-toggle small { min-width: 0; color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.conversation-summary-chevron { flex: 0 0 auto; margin-left: auto; color: var(--muted); transition: transform .18s; }
+.conversation-summary.open .conversation-summary-chevron { transform: rotate(180deg); }
+.conversation-summary-head .icon-button { width: 28px; height: 28px; }
+.conversation-summary-body { display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow: auto; padding: 0 14px 10px 35px; }
+.conversation-summary-body ul { margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 4px; color: var(--ink-2); font-size: 13.5px; line-height: 1.45; }
+.conversation-summary-body p { margin: 0; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+.conversation-summary-body small { font-size: 11.5px; }
+.conversation-summary-error { color: var(--red-text); }
+@media (max-width: 760px) { .conversation-summary { margin: 8px 12px 0; } }
 .portal-messages { padding: 24px 24px 12px; display: flex; flex: 1; overflow: auto; overflow-anchor: none; flex-direction: column; gap: 15px; }
 .portal-messages::after { content: ""; flex: 0 0 8px; }
 .portal-messages article { max-width: 76%; }
@@ -1427,6 +1467,18 @@ textarea { line-height: 1.55; }
   align-items: center;
 }
 .access-intro { padding: 56px 0; }
+/* The stores' badges, served by the stores: a quiet row under the preview on
+   the sign-in page and beside the "Mobile app" row under Preferences. */
+.app-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.app-badges a { display: block; line-height: 0; overflow: hidden; }
+/* Google's PNG carries a transparent margin that Apple's SVG does not; the
+   extra height and negative margins trim it so both read the same size. */
+.app-badges img { height: 40px; width: auto; display: block; }
+.app-badges img.badge-google { height: 48px; margin: -4px -6px; }
+.access-apps { margin-top: 22px; display: flex; flex-direction: column; gap: 8px; }
+.access-apps small { color: var(--muted); font-size: 13px; font-weight: 500; }
+.mobile-app-row .app-badges img { height: 34px; }
+.mobile-app-row .app-badges img.badge-google { height: 41px; margin: -3.5px -5px; }
 .access-eyebrow { color: var(--accent-text); font-size: 12px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
 .portal-access .access-eyebrow { color: var(--portal-color, var(--accent-text)); }
 .access-intro > h1 { max-width: 660px; margin: 12px 0 16px; font-size: clamp(40px, 4.5vw, 58px); font-weight: 600; line-height: 1.04; letter-spacing: -2.5px; }
@@ -1603,15 +1655,12 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
   .wa-actions .button, .wa-actions-side { width: 100%; }
 }
 
-/* Palawan Collective identity: monochrome primary (black on light, white on dark),
-   green kept as the secondary accent and neutral surfaces throughout. */
-.pc-icon {
+/* Identidad OpenLivery: azul institucional, verde como acento y superficies neutras. */
+.openlivery-icon {
   width: 32px !important;
   height: 32px !important;
   min-width: 32px;
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
+  display: inline-block !important;
   position: relative;
   overflow: hidden;
   flex: 0 0 auto;
@@ -1620,24 +1669,23 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
   background: var(--canvas) !important;
   box-shadow: none !important;
 }
-.pc-icon img {
-  width: 86% !important;
-  height: 86% !important;
+.openlivery-icon img {
+  width: 112px !important;
   max-width: none !important;
-  position: static;
+  height: 112px !important;
+  position: absolute;
+  top: -38px;
+  left: -15px;
   object-fit: contain;
 }
-/* Turtle mark follows the theme: black on light canvases, white on dark. */
-.pc-icon img.logo-dark { display: none; }
-:root[data-theme="dark"] .pc-icon img.logo-light { display: none; }
-:root[data-theme="dark"] .pc-icon img.logo-dark { display: inline; }
-.brand .pc-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
-.preview-logo.pc-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
+.openlivery-icon::after { content: ""; width: 6px; position: absolute; inset: 0 0 0 auto; z-index: 2; background: var(--canvas); }
+.brand .openlivery-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
+.brand .openlivery-icon img { width: 106px !important; height: 106px !important; top: -36px; left: -14px; }
+.preview-logo.openlivery-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
+.preview-logo.openlivery-icon img { width: 106px !important; height: 106px !important; top: -36px; left: -14px; }
 
 .brand-row { padding-bottom: 14px; }
 .brand { color: var(--accent-text); font-size: 16px; font-weight: 700; }
-/* The sidebar is always dark navy, so the wordmark stays white in both themes. */
-.sidebar .brand { color: white; }
 .sidebar-workspace { min-height: 38px; margin: 12px 4px 14px; padding: 0 9px; display: flex; align-items: center; gap: 8px; color: var(--muted); border: 1px solid var(--line); border-radius: 7px; background: var(--surface-2); font-size: 12px; }
 .sidebar-workspace span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 /* The agency's own logo when it has one; the building icon otherwise. */
@@ -1687,7 +1735,7 @@ input:focus, textarea:focus, select:focus, .phone-input:focus-within { border-co
 .settings-intro, .security-note { color: var(--accent-text); border-color: var(--line); background: var(--canvas); }
 .wa-side > svg { color: var(--green-text); }
 
-.access-brand > .pc-icon { background: var(--canvas) !important; }
+.access-brand > .openlivery-icon { background: var(--canvas) !important; }
 .access-brand strong { color: var(--accent-text); font-size: 16px; }
 .preview-logo, .preview-icon { color: var(--accent-text); background: var(--accent-soft); }
 .access-card-label { color: var(--green-text); }
@@ -1695,27 +1743,6 @@ input:focus, textarea:focus, select:focus, .phone-input:focus-within { border-co
 .portal-access .button.primary { border-color: var(--portal-color, var(--accent)); background: var(--portal-color, var(--accent)); }
 .portal-brand span, .portal-brand img { background: var(--portal-color, var(--accent)); }
 .portal-preview > footer strong { color: var(--portal-color, var(--accent-text)); }
-
-/* Dark theme flips the primary to white, so everything that puts white text or
-   icons on an accent background gets the canvas color back instead. */
-:root[data-theme="dark"] .button.primary,
-:root[data-theme="dark"] .message-row.user .bubble,
-:root[data-theme="dark"] .inbox-message.user p,
-:root[data-theme="dark"] .preview-thread article.mine p,
-:root[data-theme="dark"] .composer button:not(.composer-attach),
-:root[data-theme="dark"] .inbox-composer button,
-:root[data-theme="dark"] .hero-panel .button.light,
-:root[data-theme="dark"] .inbox-unread-count,
-:root[data-theme="dark"] .wizard-steps li.current span,
-:root[data-theme="dark"] .transport-toggle button.active,
-:root[data-theme="dark"] .audio-bubble > button,
-:root[data-theme="dark"] .audio-bubble .audio-play,
-:root[data-theme="dark"] .segmented button.active,
-:root[data-theme="dark"] .drp-grid button.start,
-:root[data-theme="dark"] .drp-grid button.end,
-:root[data-theme="dark"] .brand-mark:not(.light),
-:root[data-theme="dark"] .access-brand > span { color: var(--canvas); }
-:root[data-theme="dark"] .message-row.user .rich-text code { background: rgba(0,0,0,.18); }
 
 
 /* Agent creation wizard (Fase 1). Built on the existing design tokens. */
@@ -1786,6 +1813,16 @@ input:focus, textarea:focus, select:focus, .phone-input:focus-within { border-co
 .capability-head span { display: flex; flex-direction: column; gap: 1px; }
 .capability-head strong { font-size: 14px; }
 .capability-head small { color: var(--muted); font-size: 12px; }
+/* The agent's hours of service: one row per weekday. */
+.schedule-week { display: flex; flex-direction: column; gap: 8px; }
+.schedule-day { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; min-height: 44px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
+.schedule-day.on { background: var(--surface); }
+.schedule-day-name { display: flex; flex-direction: row !important; align-items: center; gap: 10px; min-width: 150px; font-size: 14px; cursor: pointer; }
+.schedule-day-name input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; flex: 0 0 auto; }
+.schedule-day-name span { text-transform: capitalize; }
+.schedule-hours { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.schedule-hours input[type="time"] { width: auto; min-height: 34px; padding: 0 10px; }
+.schedule-warning { color: var(--red-text); }
 .capability-model { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); padding-left: 28px; }
 .capabilities-intro, .group-intro { display: flex; flex-direction: column; gap: 3px; padding-top: 16px; border-top: 1px solid var(--line); }
 .capabilities-intro strong, .group-intro strong { font-size: 13px; color: var(--ink-2); }
@@ -2317,6 +2354,16 @@ p .msg-time, .bubble .msg-time { float: none; position: absolute; right: 11px; b
 .esc-step-n { flex: 0 0 auto; width: 24px; height: 24px; display: inline-grid; place-items: center; color: var(--accent-text); border-radius: 50%; background: var(--accent-soft); font-size: 12px; font-weight: 700; }
 .esc-step-head .esc-toggle.switch-row { flex: 0 0 auto !important; width: auto !important; min-height: 0; margin: 2px 0 0; padding: 0; border: 0; border-radius: 0; background: transparent; gap: 0; }
 .esc-step-head > div { flex: 1 1 auto; }
+.esc-step-head { align-items: center; padding: 10px 16px; }
+.esc-step-toggle { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 2px 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.esc-step-title { min-width: 0; flex: 1 1 auto; display: flex; flex-direction: column; gap: 2px; }
+.esc-step-title strong { font-size: 14px; color: var(--ink); }
+.esc-step-title small { color: var(--muted); font-size: 12.5px; line-height: 1.4; }
+.esc-step-summary { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.esc-step-chevron { flex: 0 0 auto; color: var(--muted); transition: transform .18s; }
+.esc-step.open .esc-step-chevron { transform: rotate(180deg); }
+.esc-step-head .esc-toggle.switch-row { margin: 0; }
+.esc-step-toggle:disabled { cursor: default; opacity: 1; }
 .esc-step-body { display: flex; flex-direction: column; gap: 8px; padding: 12px 16px 14px; border-top: 1px solid var(--line-soft); background: var(--surface-2); }
 .esc-empty { margin: 0; color: var(--muted); font-size: 13px; }
 .esc-row { display: flex; align-items: center; gap: 10px; min-height: 36px; }
@@ -2587,7 +2634,10 @@ html[data-theme-transition], html[data-theme-transition] *, html[data-theme-tran
 @media (max-width: 850px) {
   .portal-app { grid-template-columns: 1fr; }
   .portal-nav { position: fixed; z-index: 20; left: 0; right: 0; bottom: 0; padding: 6px 8px calc(6px + env(safe-area-inset-bottom)); flex-direction: row; border-right: 0; border-top: 1px solid var(--line); background: var(--surface); box-shadow: 0 -4px 16px rgba(var(--shadow-rgb), calc(.06 * var(--shadow-k))); }
-  .portal-nav .portal-brand, .portal-nav > .portal-nav-foot { display: none; }
+  .portal-nav .portal-brand, .portal-nav > .portal-nav-foot, .portal-nav > button.sidebar-toggle { display: none; }
+  .portal-app.nav-collapsed { grid-template-columns: 1fr; }
+  .nav-collapsed .portal-nav nav a > span { display: block; }
+  .nav-collapsed .portal-nav nav a { padding: 0 4px; gap: 3px; }
   .portal-nav nav { width: 100%; padding: 0; flex-direction: row; gap: 4px; }
   .portal-nav nav a { position: relative; flex: 1 1 0; height: 50px; padding: 0 4px; flex-direction: column; justify-content: center; gap: 3px; font-size: 11px; font-weight: 600; }
   .portal-nav nav a .nav-count { position: absolute; top: 4px; right: calc(50% - 24px); margin: 0; }

@@ -78,10 +78,16 @@ export type Agent = {
   audio_model: string;
   embedding_model: string;
   is_active: boolean;
+  // On duty only inside these slots when enabled; times are "HH:MM" in the
+  // client's timezone and the day is 0 (Monday) to 6 (Sunday).
+  schedule_enabled: boolean;
+  schedule_slots: ScheduleSlot[];
   client: Client;
   created_at: string;
   updated_at: string;
 };
+
+export type ScheduleSlot = { day: number; start: string; end: string };
 
 export type Provider = {
   provider: string;
@@ -89,6 +95,10 @@ export type Provider = {
   configured: boolean;
   // "agency": a key of the agency's own; "deployment": one the deployment lends; "none": no key.
   source?: "agency" | "deployment" | "none";
+  // Whether the agency holds a key of its own, and whether it is in use; a
+  // paused key is stored and not enabled, and `source` says what answers.
+  stored?: boolean;
+  enabled?: boolean;
   api_key_masked: string;
 };
 
@@ -137,7 +147,8 @@ export type ToolCallMeta = { name: string; arguments: Record<string, unknown>; r
 
 export type Source = { id: string; filename: string; excerpt: string };
 export type Attachment = { id: string; kind: "image" | "audio" | "video" | "file"; mime: string; filename: string | null; size_bytes: number };
-export type Message = { id: string; role: "user" | "assistant" | "system"; kind?: "message" | "activity"; delivery_status?: "pending" | "sent" | "delivered" | "read" | "failed" | "unknown" | null; delivery_error?: string | null; activity?: { event: string; hours?: number | string; assignee?: string; from?: string; team?: string; target?: string; reason?: string; tag?: string } | null; content: string; sources: Source[]; tool_calls?: ToolCallMeta[] | null; sender_type: "visitor" | "ai" | "human"; sender_name: string | null; reaction?: string | null; incoming_reaction?: string | null; quoted_message_id?: string | null; created_at: string; attachments?: Attachment[] };
+export type MessageButton = { type: string; text: string };
+export type Message = { id: string; role: "user" | "assistant" | "system"; kind?: "message" | "activity"; delivery_status?: "pending" | "sent" | "delivered" | "read" | "failed" | "unknown" | null; delivery_error?: string | null; activity?: { event: string; hours?: number | string; assignee?: string; from?: string; team?: string; target?: string; reason?: string; tag?: string } | null; content: string; sources: Source[]; tool_calls?: ToolCallMeta[] | null; sender_type: "visitor" | "ai" | "human"; sender_name: string | null; reaction?: string | null; incoming_reaction?: string | null; quoted_message_id?: string | null; buttons?: MessageButton[] | null; created_at: string; attachments?: Attachment[] };
 
 export type ConversationInbox = {
   id: string;
@@ -299,6 +310,7 @@ export type Template = {
   name: string;
   language: string;
   category: string;
+  previous_category?: string | null;
   status: "APPROVED" | "PENDING" | "REJECTED" | string;
   parameter_format: "NAMED" | "POSITIONAL" | string;
   header: TemplateHeader | null;
@@ -431,6 +443,8 @@ export type PortalPublic = {
   agency_brand_color: string;
   agency_logo_url: string | null;
   client_logo_url: string | null;
+  ios_app_url?: string | null;
+  android_app_url?: string | null;
 };
 
 export type SocialProvider = "instagram" | "messenger";
@@ -531,6 +545,8 @@ export type ReportReply = {
   duration_ms: number | null;
   tools: number;
   tool_errors: number;
+  // "reply", or "summary" for a conversation summary a person asked for.
+  purpose?: "reply" | "summary";
 };
 
 /** A detail a contact can hold: the built-in name, email and phone, or a
