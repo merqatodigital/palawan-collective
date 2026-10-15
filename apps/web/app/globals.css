@@ -1655,8 +1655,8 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
   .wa-actions .button, .wa-actions-side { width: 100%; }
 }
 
-/* Identidad OpenLivery: azul institucional, verde como acento y superficies neutras. */
-.openlivery-icon {
+/* Identidad Palawan Collective: azul institucional, verde como acento y superficies neutras. */
+.pc-icon {
   width: 32px !important;
   height: 32px !important;
   min-width: 32px;
@@ -1669,7 +1669,7 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
   background: var(--canvas) !important;
   box-shadow: none !important;
 }
-.openlivery-icon img {
+.pc-icon img {
   width: 112px !important;
   max-width: none !important;
   height: 112px !important;
@@ -1678,11 +1678,11 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
   left: -15px;
   object-fit: contain;
 }
-.openlivery-icon::after { content: ""; width: 6px; position: absolute; inset: 0 0 0 auto; z-index: 2; background: var(--canvas); }
-.brand .openlivery-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
-.brand .openlivery-icon img { width: 106px !important; height: 106px !important; top: -36px; left: -14px; }
-.preview-logo.openlivery-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
-.preview-logo.openlivery-icon img { width: 106px !important; height: 106px !important; top: -36px; left: -14px; }
+.pc-icon::after { content: ""; width: 6px; position: absolute; inset: 0 0 0 auto; z-index: 2; background: var(--canvas); }
+.brand .pc-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
+.brand .pc-icon img { width: 106px !important; height: 106px !important; top: -36px; left: -14px; }
+.preview-logo.pc-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
+.preview-logo.pc-icon img { width: 106px !important; height: 106px !important; top: -36px; left: -14px; }
 
 .brand-row { padding-bottom: 14px; }
 .brand { color: var(--accent-text); font-size: 16px; font-weight: 700; }
@@ -1735,7 +1735,7 @@ input:focus, textarea:focus, select:focus, .phone-input:focus-within { border-co
 .settings-intro, .security-note { color: var(--accent-text); border-color: var(--line); background: var(--canvas); }
 .wa-side > svg { color: var(--green-text); }
 
-.access-brand > .openlivery-icon { background: var(--canvas) !important; }
+.access-brand > .pc-icon { background: var(--canvas) !important; }
 .access-brand strong { color: var(--accent-text); font-size: 16px; }
 .preview-logo, .preview-icon { color: var(--accent-text); background: var(--accent-soft); }
 .access-card-label { color: var(--green-text); }

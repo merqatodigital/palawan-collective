@@ -546,7 +546,7 @@ dependency (`pip install -r requirements.txt`).
 
 ### Documentation
 
-- Full documentation site at [openlivery.com/docs](https://openlivery.com/docs) with per-feature guides in English and Spanish.
+- Full documentation site at [github.com/sanvicpalawan/palawan-collective/tree/main/docs](https://github.com/sanvicpalawan/palawan-collective/tree/main/docs) with per-feature guides in English and Spanish.
 - README restructured around the documentation site, with each feature linking to its guide.
 - Corrected the WhatsApp inbound route in `CLAUDE.md`.
 
@@ -585,8 +585,8 @@ First tagged release.
 - Custom per-client portal domains with on-demand TLS.
 - README and self-hosting guide.
 
-[Unreleased]: https://github.com/sarrazola/openlivery/compare/v0.4.0...HEAD
-[0.4.0]: https://github.com/sarrazola/openlivery/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/sarrazola/openlivery/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/sarrazola/openlivery/compare/v0.1.0...v0.2.0
-[0.1.0]: https://github.com/sarrazola/openlivery/releases/tag/v0.1.0
+[Unreleased]: https://github.com/sanvicpalawan/palawan-collective/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/sanvicpalawan/palawan-collective/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/sanvicpalawan/palawan-collective/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/sanvicpalawan/palawan-collective/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/sanvicpalawan/palawan-collective/releases/tag/v0.1.0

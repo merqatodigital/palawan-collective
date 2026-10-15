@@ -12,8 +12,8 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd --gid 10001 openlivery \
-    && useradd --uid 10001 --gid openlivery --create-home openlivery
+RUN groupadd --gid 10001 palawan_collective \
+    && useradd --uid 10001 --gid palawan_collective --create-home palawan_collective
 
 WORKDIR /app/backend
 
@@ -27,9 +27,9 @@ COPY app ./app
 COPY tests ./tests
 
 RUN mkdir -p /app/backend/storage \
-    && chown -R openlivery:openlivery /app
+    && chown -R palawan_collective:palawan_collective /app
 
-USER openlivery
+USER palawan_collective
 
 EXPOSE 8000
 

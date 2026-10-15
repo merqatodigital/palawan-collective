@@ -1,4 +1,4 @@
-# OpenLivery — developer commands
+# Palawan Collective — developer commands
 # Run `make` or `make help` to list targets.
 #
 # Override host ports if they clash with other local services, e.g.:
