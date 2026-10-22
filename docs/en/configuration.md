@@ -52,6 +52,28 @@ reopen agency registration. Upgrading preserves existing users and data; the
 removed `ALLOW_MULTI_AGENCY` environment variable has no effect and can be deleted
 from older configuration files.
 
+## Branding
+
+The agency sets its own name, logo and primary color from **Settings → Identity**
+in the dashboard. They live on the agency row: the name and the identifier are
+plain columns, the logo is a binary column served from `/api/agency/logo`, and the
+color is a hex string. The color drives the client portal, and it recolors the
+dashboard too, because the stylesheet derives every accent tint from a single
+`--brand` variable.
+
+What the platform falls back to lives in `apps/web/lib/brand.ts`:
+
+| Constant | What it controls |
+| --- | --- |
+| `APP_NAME` | The product name in the sidebar, on the access pages and in the browser tab |
+| `APP_LOGO` | The logo shown before a session loads — a square mark under `apps/web/public/brand/` |
+| `APP_BRAND_COLOR` | The default primary color, matching `--brand` in `apps/web/app/globals.css` |
+
+Change those three and the whole interface follows. The mark is drawn scaled to
+fit its square, so a square PNG or SVG of any size works — no crop is tuned to
+one particular artwork. The mobile app carries no brand of its own; see
+`apps/mobile/WHITELABEL.md`.
+
 ## Host ports
 
 Compose binds each service to a host port, all overridable. Pass them inline to `make up`:

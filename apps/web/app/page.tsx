@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, Bot, Building2, Cpu, MessagesSquare, MessageSquareText, Radio, UserRound, X } from "lucide-react";
 import { api } from "@/lib/api";
 import { useLanguage } from "@/lib/i18n";
+import { APP_NAME } from "@/lib/brand";
 import { businessLabel, useIndustries } from "@/lib/industries";
 import { PageHead, StatusBadge } from "@/components/ui";
 import { ListRowsSkeleton, PanelSkeleton, Skeleton } from "@/components/skeleton";
@@ -85,6 +86,7 @@ export default function HomePage() {
         <div className="panel-head"><div><h3>{t("home.recentAgents.title")}</h3><p>{t("home.recentAgents.subtitle")}</p></div><Link href="/agents" className="text-link">{t("home.recentAgents.viewAll")} <ArrowRight size={15} /></Link></div>
         {!loadedCore ? <ListRowsSkeleton rows={4} /> : agents.length ? <div className="compact-list">{agents.slice(0, 5).map((agent) => <Link href={`/agents/${agent.id}`} key={agent.id} className="compact-row"><span className="agent-avatar"><Bot size={18} /></span><div><strong>{agent.name}</strong><small>{agent.client.name}{businessLabel(catalog, agent.client, lang) ? ` · ${businessLabel(catalog, agent.client, lang)}` : ""}</small></div><StatusBadge active={agent.is_active} /><ArrowRight size={16} /></Link>)}</div> : <div className="inline-empty"><Bot size={24} /><div><strong>{t("home.recentAgents.emptyTitle")}</strong><span>{t("home.recentAgents.emptyDesc")}</span></div></div>}
       </section>
+      <footer className="page-footer"><span>{t("home.footer.poweredBy", { brand: APP_NAME })}</span></footer>
     </div>
   );
 }

@@ -27,12 +27,18 @@
   --faint: #aeb6cc;
   --on-dark: #e6ebf5;
   --inverse: #17203a;
-  --accent: #075985;
-  --accent-hover: #064466;
-  --accent-text: #075985;
-  --accent-soft: #eaf3f5;
-  --accent-line: #c9dce4;
-  --accent-rgb: 7, 89, 133;
+  /* The white-label primary. Every accent tint derives from it, so a
+     deployment recolors the whole interface by changing --brand (and
+     --brand-rgb, which CSS cannot derive from a hex). The agency can set it
+     at runtime from Settings -> Identity; see lib/brand-color.ts. */
+  --brand: #b30001;
+  --brand-rgb: 179, 0, 1;
+  --accent: var(--brand);
+  --accent-hover: color-mix(in srgb, var(--brand) 84%, #000);
+  --accent-text: color-mix(in srgb, var(--brand) 88%, #000);
+  --accent-soft: color-mix(in srgb, var(--brand) 8%, #fff);
+  --accent-line: color-mix(in srgb, var(--brand) 30%, #fff);
+  --accent-rgb: var(--brand-rgb);
   --green: #00a67d;
   --green-text: #00866b;
   --green-soft: #e8f7f2;
@@ -91,12 +97,14 @@
   --faint: #56617b;
   --on-dark: #e8edf7;
   --inverse: #2f3a56;
-  --accent: #2a8ec4;
-  --accent-hover: #3b9fd4;
-  --accent-text: #7cc6ec;
-  --accent-soft: #152a3b;
-  --accent-line: #25506a;
-  --accent-rgb: 124, 198, 236;
+  /* On a dark canvas the brand has to be lifted to stay legible, so the dark
+     theme derives its own set from the same --brand. */
+  --accent: var(--brand);
+  --accent-hover: color-mix(in srgb, var(--brand) 82%, #fff);
+  --accent-text: color-mix(in srgb, var(--brand) 45%, #fff);
+  --accent-soft: color-mix(in srgb, var(--brand) 20%, #141a2a);
+  --accent-line: color-mix(in srgb, var(--brand) 45%, #141a2a);
+  --accent-rgb: var(--brand-rgb);
   --green: #1fae86;
   --green-text: #5bd6ad;
   --green-soft: #12302a;
@@ -202,6 +210,10 @@ h1, h2, h3, .brand { font-family: var(--font-display); letter-spacing: -.015em; 
 .mobile-menu, .sidebar-close { display: none; }
 .app-loader, .page-loading { min-height: 100vh; display: flex; align-items: center; justify-content: center; gap: 12px; color: var(--muted); }
 .page-loading { min-height: 60vh; }
+
+/* The sign-off at the bottom of a page: which product this deployment runs. */
+.page-footer { padding: 6px 0 0; color: var(--subtle); font-size: 12px; text-align: center; }
+.page-footer span { display: inline-block; }
 
 .page-head { margin-bottom: 29px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
 .page-head h1 { margin: 3px 0 6px; color: var(--ink); font-size: clamp(29px, 3vw, 36px); letter-spacing: -1.2px; line-height: 1.1; }
@@ -1655,12 +1667,15 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
   .wa-actions .button, .wa-actions-side { width: 100%; }
 }
 
-/* Identidad Palawan Collective: azul institucional, verde como acento y superficies neutras. */
+/* The brand badge in the sidebar and on the access pages. The image is scaled
+   to fit the square instead of being cropped with hardcoded offsets, so any
+   mark the agency uploads lands here without a crop tuned to one artwork. */
 .pc-icon {
   width: 32px !important;
   height: 32px !important;
   min-width: 32px;
-  display: inline-block !important;
+  display: inline-grid !important;
+  place-items: center;
   position: relative;
   overflow: hidden;
   flex: 0 0 auto;
@@ -1670,19 +1685,14 @@ button.back-link { padding: 0; border: 0; background: transparent; cursor: point
   box-shadow: none !important;
 }
 .pc-icon img {
-  width: 112px !important;
+  width: 100% !important;
   max-width: none !important;
-  height: 112px !important;
-  position: absolute;
-  top: -38px;
-  left: -15px;
+  height: 100% !important;
   object-fit: contain;
+  display: block;
 }
-.pc-icon::after { content: ""; width: 6px; position: absolute; inset: 0 0 0 auto; z-index: 2; background: var(--canvas); }
 .brand .pc-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
-.brand .pc-icon img { width: 106px !important; height: 106px !important; top: -36px; left: -14px; }
 .preview-logo.pc-icon { width: 30px !important; height: 30px !important; min-width: 30px; }
-.preview-logo.pc-icon img { width: 106px !important; height: 106px !important; top: -36px; left: -14px; }
 
 .brand-row { padding-bottom: 14px; }
 .brand { color: var(--accent-text); font-size: 16px; font-weight: 700; }

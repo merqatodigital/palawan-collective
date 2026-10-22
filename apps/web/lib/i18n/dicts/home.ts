@@ -54,6 +54,9 @@ const en = {
     emptyTitle: "No agents yet",
     emptyDesc: "Add them from each client's workspace.",
   },
+  footer: {
+    poweredBy: "{brand} · AI agents for your agency",
+  },
 };
 
 const es: typeof en = {
@@ -110,6 +113,9 @@ const es: typeof en = {
     viewAll: "Ver todos",
     emptyTitle: "Aún no hay agentes",
     emptyDesc: "Agrégalos desde el espacio de cada cliente.",
+  },
+  footer: {
+    poweredBy: "{brand} · Agentes de IA para tu agencia",
   },
 };
 

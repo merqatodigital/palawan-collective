@@ -6,6 +6,7 @@ import { useT } from "@/lib/i18n";
 import { DiscordIcon } from "@/components/discord-icon";
 import { GithubIcon } from "@/components/github-icon";
 import { COMMUNITY_LINKS, DISCORD_INVITE_URL, GITHUB_REPO, GITHUB_REPO_URL } from "@/lib/community";
+import { APP_NAME } from "@/lib/brand";
 
 const STARS_CACHE_KEY = `pc:github-stars:${GITHUB_REPO}`;
 const STARS_TTL_MS = 60 * 60 * 1000;
@@ -82,8 +83,8 @@ export function CommunityLinks({ onNavigate }: { onNavigate?: () => void }) {
           className="sidebar-community sidebar-community-github"
           target="_blank"
           rel="noopener noreferrer"
-          title={t("shell.starOnGithub")}
-          aria-label={t("shell.starOnGithub")}
+          title={t("shell.starOnGithub", { brand: APP_NAME })}
+          aria-label={t("shell.starOnGithub", { brand: APP_NAME })}
           onClick={onNavigate}
         >
           <GithubIcon size={20} />

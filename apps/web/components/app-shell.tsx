@@ -6,6 +6,8 @@ import { ReactNode, useEffect, useLayoutEffect, useState } from "react";
 import { BarChart3, Bot, Building2, CreditCard, Inbox, LayoutDashboard, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Settings, Sparkles, Wallet, X } from "lucide-react";
 import { api } from "@/lib/api";
 import { useLanguage, type I18nKey } from "@/lib/i18n";
+import { APP_LOGO, APP_NAME } from "@/lib/brand";
+import { applyBrandColor } from "@/lib/brand-color";
 import { CommunityLinks } from "@/components/community-links";
 import { appShellExtensions } from "@/lib/extensions/app-shell";
 import type { User } from "@/types";
@@ -89,6 +91,13 @@ export function AppShell({ children }: { children: ReactNode }) {
     return () => { cancelled = true; };
   }, [isBare, pathname, router]);
 
+  // The agency's primary color, applied to the stylesheet so every accent
+  // tint follows it. It lives on the agency row, so a change made in
+  // Settings -> Identity recolors the dashboard on the next load.
+  useEffect(() => {
+    applyBrandColor(user?.agency.brand_color);
+  }, [user]);
+
   async function logout() {
     await api("/auth/logout", { method: "POST" });
     // The shell lives in the root layout and survives client-side navigation, so
@@ -99,8 +108,12 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   if (isBare) return <>{children}</>;
-  if (loading || !user) return <div className="app-loader"><span className="pc-icon"><img src="/brand/brand-logo-original.png" alt="" /></span><span>{t("shell.loading")}</span></div>;
+  if (loading || !user) return <div className="app-loader"><span className="pc-icon"><img src={APP_LOGO} alt="" /></span><span>{t("shell.loading", { brand: APP_NAME })}</span></div>;
 
+  // The agency sets its own name and logo in Settings -> Identity; the
+  // static brand is the fallback for an installation that has none yet.
+  const agencyLogo = user.agency.logo_url || APP_LOGO;
+  const agencyName = user.agency.name || APP_NAME;
   const workspaceLabel = <div className="sidebar-workspace">{user.agency.logo_url ? <img src={user.agency.logo_url} alt="" /> : <Building2 size={14} />}<span>{user.agency.name}</span></div>;
   const WorkspaceLabel = appShellExtensions.WorkspaceLabel;
 
@@ -111,7 +124,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <aside className={`sidebar ${mobileOpen ? "sidebar-open" : ""}`}>
         <button type="button" className="sidebar-toggle" onClick={toggleCollapsed} aria-label={collapsed ? t("shell.expandMenu") : t("shell.collapseMenu")} title={collapsed ? t("shell.expandMenu") : t("shell.collapseMenu")}>{collapsed ? <PanelLeftOpen size={15} /> : <PanelLeftClose size={15} />}</button>
         <div className="brand-row">
-          <Link href="/" className="brand"><span className="pc-icon"><img src="/brand/brand-logo-original.png" alt="" /></span><span>Palawan Collective</span></Link>
+          <Link href="/" className="brand"><span className="pc-icon"><img src={agencyLogo} alt="" /></span><span>{agencyName}</span></Link>
           <button className="sidebar-close" onClick={() => setMobileOpen(false)} aria-label={t("shell.closeMenu")}><X /></button>
         </div>
         {WorkspaceLabel ? <WorkspaceLabel user={user}>{workspaceLabel}</WorkspaceLabel> : workspaceLabel}

@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppShell } from "@/components/app-shell";
 import { ToastProvider } from "@/components/toast";
 import { LanguageProvider } from "@/lib/i18n";
+import { APP_NAME } from "@/lib/brand";
 import { ThemeProvider } from "@/lib/theme";
 import { THEME_INIT_SCRIPT } from "@/lib/theme-script";
 
@@ -15,7 +16,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "sw
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "Palawan Collective — AI agents for your agency",
+  title: `${APP_NAME} — AI agents for your agency`,
   description: "Open source platform to build and manage AI agents.",
 };
 

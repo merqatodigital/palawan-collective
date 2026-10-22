@@ -52,6 +52,28 @@ para reabrir el registro. La actualización conserva los usuarios y datos existe
 la antigua variable `ALLOW_MULTI_AGENCY` ya no tiene efecto y puede eliminarse de
 los archivos de configuración anteriores.
 
+## Marca
+
+La agencia define su propio nombre, logo y color principal desde
+**Configuración → Identidad** en el panel. Viven en la fila de la agencia: el
+nombre y el identificador son columnas normales, el logo es una columna binaria
+servida desde `/api/agency/logo` y el color es una cadena hexadecimal. El color
+mueve el portal de clientes y también recolorea el panel, porque la hoja de
+estilos deriva todos los tintes de acento de una sola variable `--brand`.
+
+Lo que el producto usa por defecto está en `apps/web/lib/brand.ts`:
+
+| Constante | Qué controla |
+| --- | --- |
+| `APP_NAME` | El nombre del producto en la barra lateral, en las páginas de acceso y en la pestaña del navegador |
+| `APP_LOGO` | El logo que se muestra antes de tener sesión — una marca cuadrada en `apps/web/public/brand/` |
+| `APP_BRAND_COLOR` | El color principal por defecto, el mismo que `--brand` en `apps/web/app/globals.css` |
+
+Cambia esas tres y toda la interfaz sigue. La marca se dibuja ajustada a su
+cuadrado, así que sirve un PNG o SVG cuadrado de cualquier tamaño — no hay
+ningún recorte afinado a un artwork concreto. La app móvil no lleva marca propia;
+mira `apps/mobile/WHITELABEL.md`.
+
 ## Puertos del host
 
 Compose enlaza cada servicio a un puerto del host, todos sobrescribibles. Pásalos en línea a `make up`:
