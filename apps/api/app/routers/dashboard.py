@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db
 from ..deps import get_current_user
-from ..models import Agent, Client, Conversation, Message, SocialChannel, UsageRecord, User, WhatsAppChannel, WhatsAppCloudChannel, now_utc
+from ..models import Agent, Client, Conversation, Message, SocialChannel, UsageRecord, User, WhatsAppChannel, WhatsAppCloudChannel, WidgetChannel, now_utc
 from ..schemas import DashboardMetrics, DashboardOut
 
 
@@ -40,6 +40,12 @@ def dashboard(db: Session = Depends(get_db), user: User = Depends(get_current_us
         channels += db.scalar(select(func.count(model.id)).where(model.agency_id == agency_id)) or 0
         connected_channels += db.scalar(select(func.count(model.id)).where(
             model.agency_id == agency_id, model.status == "connected", model.is_enabled.is_(True))) or 0
+    # The web chat widget is a channel of the client like the WhatsApp lines, so
+    # it counts here too. It has no connection handshake: being enabled is what
+    # makes it reachable.
+    channels += db.scalar(select(func.count(WidgetChannel.id)).where(WidgetChannel.agency_id == agency_id)) or 0
+    connected_channels += db.scalar(select(func.count(WidgetChannel.id)).where(
+        WidgetChannel.agency_id == agency_id, WidgetChannel.is_enabled.is_(True))) or 0
     recent_agents = db.scalars(
         select(Agent).where(Agent.agency_id == agency_id, Agent.deleted_at.is_(None)).order_by(Agent.created_at.desc()).limit(5)
     ).all()

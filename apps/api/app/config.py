@@ -9,7 +9,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]  # monorepo root (used for a sha
 
 
 class Settings(BaseSettings):
-    app_name: str = "Palawan Collective API"
+    app_name: str = "MerQato Digital API"
     database_url: str = "postgresql+psycopg://palawan_collective:palawan_collective@localhost:5432/palawan_collective"
     secret_key: str = "dev-local-change-this-key-please"
     encryption_key: str = "dev-local-change-this-key-too"

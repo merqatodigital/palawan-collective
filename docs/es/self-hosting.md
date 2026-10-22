@@ -1,11 +1,11 @@
-# Autoalojar Palawan Collective
+# Autoalojar MerQato Digital
 
 > Read in English: [self-hosting.md](../en/self-hosting.md)
 
-Levanta y opera tu propia instancia de Palawan Collective. Para una vista general de las
+Levanta y opera tu propia instancia de MerQato Digital. Para una vista general de las
 funcionalidades, mira el [README](../../README.md).
 
-Palawan Collective se orquesta con Docker Compose, y un `Makefile` envuelve los comandos
+MerQato Digital se orquesta con Docker Compose, y un `Makefile` envuelve los comandos
 habituales. Un **gateway** ligero (Caddy) es el único punto de entrada público:
 sirve la aplicación y enruta `/api/*` al backend, así que el frontend y la API
 comparten un mismo origen.
@@ -116,7 +116,7 @@ base de datos y el puente de WhatsApp se quedan en la red privada de Compose.
 
 ## Asegurar tu instalación
 
-Haz esto antes de exponer Palawan Collective a alguien más.
+Haz esto antes de exponer MerQato Digital a alguien más.
 
 - **Secretos.** `generate-docker-env.sh` rellena `SECRET_KEY`, `ENCRYPTION_KEY`,
   `WHATSAPP_BRIDGE_TOKEN` y `POSTGRES_PASSWORD` con valores aleatorios. Si los

@@ -6,7 +6,7 @@ repo already uses in `apps/web`.
 
 ## Project
 
-One Palawan Collective installation serves one agency, which creates and manages AI agents for multiple clients, with a chat playground, client portals, and messaging integrations. First-run setup creates the agency and its owner, then public registration closes permanently. Do not add a setting, endpoint, or UI flow for registering additional agencies. Three services + PostgreSQL:
+One MerQato Digital installation serves one agency, which creates and manages AI agents for multiple clients, with a chat playground, client portals, and messaging integrations. First-run setup creates the agency and its owner, then public registration closes permanently. Do not add a setting, endpoint, or UI flow for registering additional agencies. Three services + PostgreSQL:
 
 - `apps/api/` — FastAPI (Python 3.12) + SQLAlchemy + Alembic
 - `apps/web/` — Next.js 16 (App Router) + React 19 + TypeScript + Tailwind

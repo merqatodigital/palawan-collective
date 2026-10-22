@@ -5,7 +5,7 @@ Two things these tests exist to hold still:
 * An install that upgrades keeps working. A portal that only ever had the single
   legacy e-mail and password must still sign in, in the browser and on a phone.
 * Notifications stay optional. With no provider configured nothing is sent and
-  nothing is required, which is the default a self-hosted Palawan Collective runs on.
+  nothing is required, which is the default a self-hosted MerQato Digital runs on.
 """
 
 import pytest

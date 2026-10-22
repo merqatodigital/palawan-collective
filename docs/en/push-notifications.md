@@ -2,7 +2,7 @@
 
 > Leer en español: [push-notifications.md](../es/push-notifications.md)
 
-Palawan Collective ships the notification *plumbing* and no notification *provider*.
+MerQato Digital ships the notification *plumbing* and no notification *provider*.
 There is no account to create, no third party involved, and nothing to pay for
 in a default install: `PUSH_PROVIDER` is `none` and the server sends nothing.
 
@@ -18,7 +18,7 @@ an app that was built against the provider that server sends through.
 
 The practical consequence:
 
-- **You run your own Palawan Collective and use the official Palawan Collective app from the
+- **You run your own MerQato Digital and use the official MerQato Digital app from the
   store.** That app can read and answer everything on your server perfectly
   well, but it cannot receive push from it — the store build only accepts
   notifications from the credentials it was signed with, which belong to whoever

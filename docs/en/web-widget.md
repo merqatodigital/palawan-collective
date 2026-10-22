@@ -2,7 +2,7 @@
 
 > Leer en español: [web-widget.md](../es/web-widget.md)
 
-The web widget is an embeddable chat, a channel of a client answered by one of its agents, that you can drop onto any website with a single `<script>` tag. Visitors get a floating chat button; opening it talks to the agent through Palawan Collective's public API, with the same knowledge and instructions you configured.
+The web widget is an embeddable chat, a channel of a client answered by one of its agents, that you can drop onto any website with a single `<script>` tag. Visitors get a floating chat button; opening it talks to the agent through MerQato Digital's public API, with the same knowledge and instructions you configured.
 
 ## How it works
 
@@ -28,7 +28,7 @@ The snippet points `data-agent` at the channel's public id and passes the appear
 ></script>
 ```
 
-Paste it before the closing `</body>` tag of any page. The `src` origin must be your Palawan Collective deployment; `widget.js` derives the iframe URL from its own origin.
+Paste it before the closing `</body>` tag of any page. The `src` origin must be your MerQato Digital deployment; `widget.js` derives the iframe URL from its own origin.
 
 ## Messages and rate limiting
 

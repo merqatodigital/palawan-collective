@@ -2,7 +2,7 @@
 
 > Read in English: [getting-started.md](../en/getting-started.md)
 
-Palawan Collective se ejecuta como tres servicios más PostgreSQL, orquestados por Docker Compose. La forma más rápida de probarlo es clonar el repositorio, generar los secretos y levantar el stack con un solo comando.
+MerQato Digital se ejecuta como tres servicios más PostgreSQL, orquestados por Docker Compose. La forma más rápida de probarlo es clonar el repositorio, generar los secretos y levantar el stack con un solo comando.
 
 ## Requisitos
 

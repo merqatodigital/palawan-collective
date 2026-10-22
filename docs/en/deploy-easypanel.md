@@ -1,4 +1,4 @@
-# Deploy Palawan Collective with Easypanel
+# Deploy MerQato Digital with Easypanel
 
 Use Easypanel's **Compose service** with
 [`docker-compose.easypanel.yml`](../../docker-compose.easypanel.yml). It starts
@@ -40,7 +40,7 @@ cookie values.
 | `PALAWAN_VERSION` | One published tag for all three application images; defaults to `latest`. Prefer a release tag or `sha-<short-commit>` for repeatable upgrades. |
 | `ACCESS_TOKEN_MINUTES` | Optional session lifetime; defaults to `10080`. |
 
-The template supplies internal database and bridge URLs. Palawan Collective uses backend
+The template supplies internal database and bridge URLs. MerQato Digital uses backend
 JWT sessions; it does not require NextAuth variables or a Redis service. The
 prebuilt frontend calls relative `/api`, so `NEXT_PUBLIC_API_URL` is not needed.
 Host-port variables from `.env.docker` are unused by this template.
